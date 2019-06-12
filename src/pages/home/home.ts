@@ -3,6 +3,7 @@ import { NavController, ToastController } from 'ionic-angular';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import moment from 'moment';
 
 @Component({
   selector: 'page-home',
@@ -17,12 +18,13 @@ export class HomePage {
   readonly fileTransfer: FileTransferObject = this.transfer.create();
 
   download() {
+    let beginTimer = moment().valueOf();
     this.askPermission();
 
     const transfer = this.transfer.create();
     const url = encodeURI('https://devdactic.com/html/5-simple-hacks-LBT.pdf');
-    transfer.download(url, this.file.externalRootDirectory + 'myFile.pdf').then(entry => {
-      this.presentToast();
+    transfer.download(url, this.file.externalRootDirectory + 'Download/downloadIonic.pdf').then(entry => {
+      this.presentToast(beginTimer);
     }, (error) => {
         console.log("download error source " + error.source);
         console.log("download error target " + error.target);
@@ -40,9 +42,10 @@ export class HomePage {
     this.androidPermissions.requestPermission(permission);
   }
 
-  presentToast() {
+  presentToast(beginTimer) {
+    let endTimer = moment().valueOf();
     let toast = this.toastCtrl.create({
-      message: 'Finished downloading',
+      message: 'Finished in ' + (endTimer - beginTimer) + 'ms',
       duration: 10000,
       position: 'bottom'
     });
